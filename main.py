@@ -20,6 +20,9 @@ import matplotlib.pyplot as plt
 from parameters import *
 import random
 import sys 
+import pickle
+
+
 
 # random.seed(3)
 
@@ -87,6 +90,17 @@ def schedule(data, data_gen_time):
             print("user", user, " cannot be served as no RBs remaining")
             delay.append(1000000) # complete transfer pending
             print_res("NONE", user)
+
+    
+    pickle.dump(slot_number, open("slot_number.pickle", "wb"))
+    pickle.dump(device_list, open("device_list.pickle", "wb"))
+    pickle.dump(d2, open("d2.pickle", "wb"))
+    pickle.dump(current_sample, open("current_sample.pickle", "wb"))
+    pickle.dump(d3, open("d3.pickle", "wb"))
+    pickle.dump(receptions, open("receptions.pickle", "wb"))
+    pickle.dump(d3_time, open("d3_time.pickle", "wb"))
+
+
     return (delay, PER)
 
 
@@ -103,20 +117,31 @@ def print_res(str, user): # str will be either full, partial, none meaning the a
 
 
 
+try: # will execute for the all future calls
 
+    # foo = pickle.load(open("var.pickle", "rb"))
+    slot_number = pickle.load(open("slot_number.pickle", "wb"))
+    device_list =  pickle.load(open("device_list.pickle", "wb"))
+    d2 =  pickle.load(open("d2.pickle", "wb"))
+    current_sample =  pickle.load(open("current_sample.pickle", "wb"))
+    d3 =  pickle.load(open("d3.pickle", "wb"))
+    receptions =  pickle.load(open("receptions.pickle", "wb"))
+    d3_time =  pickle.load(open("receptions.pickle", "wb"))
+except (OSError, IOError) as e: # will execute for the first call
+    # foo = 3
 # if __name__ == '__main__':
 
-slot_number = -1
-# initialize dictionaries
-device_list = np.arange(num_devices)
-# d1 = {key:0 for key in device_list} # is d1 needed ?
-d2 = {key:0 for key in device_list} # total packet waiting per user
+    slot_number = -1
+    # initialize dictionaries
+    device_list = np.arange(num_devices)
+    # d1 = {key:0 for key in device_list} # is d1 needed ?
+    d2 = {key:0 for key in device_list} # total packet waiting per user
 
-current_sample = {key:0 for key in device_list} # 1 value per user will represent the sample being served for that user
-d3 = {key:[] for key in device_list} # packets per sample per function call will be appended, made to 0 on an FCFS basis
-d3_time = {key:[] for key in device_list} # will contain the generation time of the samples corresponding to the same index in dict d3
+    current_sample = {key:0 for key in device_list} # 1 value per user will represent the sample being served for that user
+    d3 = {key:[] for key in device_list} # packets per sample per function call will be appended, made to 0 on an FCFS basis
+    d3_time = {key:[] for key in device_list} # will contain the generation time of the samples corresponding to the same index in dict d3
 
-receptions = {key:[] for key in device_list} # append the [current_time, delay] for every complete sample reception
+    receptions = {key:[] for key in device_list} # append the [current_time, delay] for every complete sample reception
 
 # users is a dict with key as user index and value as number of packets in his sample
 # for i in range(5):
