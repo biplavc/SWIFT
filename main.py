@@ -116,20 +116,21 @@ def print_res(str, user): # str will be either full, partial, none meaning the a
 
 
 
-
 try: # will execute for the all future calls
+    slot_number = pickle.load(open("slot_number.pickle", "rb"))
+    device_list =  pickle.load(open("device_list.pickle", "rb"))
+    d2 =  pickle.load(open("d2.pickle", "rb"))
+    current_sample =  pickle.load(open("current_sample.pickle", "rb"))
+    d3 =  pickle.load(open("d3.pickle", "rb"))
+    receptions =  pickle.load(open("receptions.pickle", "rb"))
+    d3_time =  pickle.load(open("d3_time.pickle", "rb"))
 
-    # foo = pickle.load(open("var.pickle", "rb"))
-    slot_number = pickle.load(open("slot_number.pickle", "wb"))
-    device_list =  pickle.load(open("device_list.pickle", "wb"))
-    d2 =  pickle.load(open("d2.pickle", "wb"))
-    current_sample =  pickle.load(open("current_sample.pickle", "wb"))
-    d3 =  pickle.load(open("d3.pickle", "wb"))
-    receptions =  pickle.load(open("receptions.pickle", "wb"))
-    d3_time =  pickle.load(open("receptions.pickle", "wb"))
+    print("inside try block")
+
+
 except (OSError, IOError) as e: # will execute for the first call
-    # foo = 3
-# if __name__ == '__main__':
+
+    print("inside except block")
 
     slot_number = -1
     # initialize dictionaries
@@ -143,13 +144,13 @@ except (OSError, IOError) as e: # will execute for the first call
 
     receptions = {key:[] for key in device_list} # append the [current_time, delay] for every complete sample reception
 
-# users is a dict with key as user index and value as number of packets in his sample
+### users is a dict with key as user index and value as number of packets in his sample
 # for i in range(5):
 
-    # PSCAD_data = {0:2, 1:2, 2:1}
-    # PSCAD_data_gen_time = {0:i, 1:i, 2:i}
-    # res_delay, res_PER = schedule(PSCAD_data, PSCAD_data_gen_time)
-    # print(res_delay, res_PER)
+#     PSCAD_data = {0:2, 1:2, 2:1}
+#     PSCAD_data_gen_time = {0:i, 1:i, 2:i}
+#     res_delay, res_PER = schedule(PSCAD_data, PSCAD_data_gen_time)
+#     print(res_delay, res_PER)
 
 f=open("test.txt","r")
 lines=f.readlines()
