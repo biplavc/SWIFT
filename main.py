@@ -17,8 +17,8 @@ The assumptions are listed below -
 
 #!/home/biplav/anaconda3/bin/python
 import numpy as np 
-import pandas as pd 
-import matplotlib.pyplot as plt 
+# import pandas as pd 
+# import matplotlib.pyplot as plt 
 from parameters import *
 import random
 import sys 
@@ -71,17 +71,16 @@ def schedule(data, data_gen_time):
             RB_remaining = RB_remaining - RB_needed
             delay_from_throughput = packet_size/throughputs[modulation_order]*10**(-3) ## -3 is coming from -6+3, -6 is Mbps in denominator and +3 is converting s to ms
             # current_sample_delay = slot_number-current_sample[user] + delay_from_throughput # in milliseconds
-            current_time = slot_number + delay_from_throughput # reception time in ms
-            total_delay = current_time - d3_time[user][current_sample[user]]
-            print("reception time (ms) =  ", slot_number,"+", delay_from_throughput, ", total_delay = ", current_time, "-",d3_time[user][current_sample[user]])
+            reception_time = slot_number + delay_from_throughput # reception time in ms
+            total_delay = reception_time - d3_time[user][current_sample[user]] # d3_time[user][current_sample[user]] stores the packet generation time
+            print("reception time (ms) =  ", slot_number,"+", delay_from_throughput, ", total_delay = ", reception_time, "-",d3_time[user][current_sample[user]])
 
-            print("reception time = ", current_time, ", total_delay = ", total_delay)
+            print("reception time = ", reception_time, ", total_delay = ", total_delay)
 
-            print("user", user, "served with total delay=", total_delay, "ms, remaining RBs=", RB_remaining)
-            delay.append(total_delay)
+            print("user", user, "served with remaining RBs=", RB_remaining)
+            delay.append(int(total_delay*1000))
             # receptions[user].append([slot_number, current_sample_delay])
-            receptions[user].append([current_time, total_delay]) # in milliseconds
-            # d1[user] = 0 # d1 needed ??
+            receptions[user].append([reception_time, total_delay]) # in milliseconds
             d2[user] = d2[user] - RB_needed # total packets remaining has decremented
             d3[user][current_sample[user]] = d3[user][current_sample[user]] - RB_needed # # total packets of the current sample remaining has decremented
             current_sample[user] = current_sample[user]+1
@@ -93,13 +92,13 @@ def schedule(data, data_gen_time):
             d2[user] = d2[user] - RB_remaining # total packets remaining
             d3[user][current_sample[user]] = d3[user][current_sample[user]] - RB_remaining # # total packets of the current sample remaining
             RB_remaining = 0
-            delay.append(1000000) # complete transfer pending
+            delay.append(5000) # transfer pending
             print_res("PARTIAL", user)
 
 
         elif (RB_remaining==0):
             print("user", user, " cannot be served as no RBs remaining")
-            delay.append(50) # complete transfer pending
+            delay.append(5000) # transfer pending
             print_res("NONE", user)
 
     
@@ -183,4 +182,5 @@ for i in range(num_devices, len(PSCAD_total_data)):
 # print("PSCAD_data = ", PSCAD_data, "PSCAD_data_gen_time = ", PSCAD_data_gen_time)
 res_delay, res_PER = schedule(PSCAD_data, PSCAD_data_gen_time)
 # print(res_delay, res_PER)
-print(*res_delay, sep = " ", file = open("result.txt", "a"))
+print(*res_delay, sep = " ", file = open("result.txt", "w"))
+print(*res_delay, sep = " ", file = open("result_total.txt", "a"))

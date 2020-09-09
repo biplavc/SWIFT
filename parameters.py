@@ -2,7 +2,7 @@ import numpy as np
 import math
 import random
 
-num_devices          = 3
+num_devices        = 3
 packet_size        = 64 # bits
 sample_sizes       = packet_size * np.random.randint(1, 5, size=num_devices) # bits
 # print(sample_sizes)
