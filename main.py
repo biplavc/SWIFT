@@ -52,6 +52,7 @@ def schedule(data, data_gen_time):
     RB_remaining       = number_of_RBs
     delay              = [] 
     PER                = []
+    reception_times    = []
     # print(total_packets, "packets as in ", packets_per_sample, " to be scheduled with", number_of_RBs, "RBs")
 
     for user in data: 
@@ -79,6 +80,7 @@ def schedule(data, data_gen_time):
 
             print("user", user, "served with remaining RBs=", RB_remaining)
             delay.append(int(total_delay*1000))
+            reception_times.append(int(reception_time*1000))
             # receptions[user].append([slot_number, current_sample_delay])
             receptions[user].append([reception_time, total_delay]) # in milliseconds
             d2[user] = d2[user] - RB_needed # total packets remaining has decremented
@@ -92,13 +94,15 @@ def schedule(data, data_gen_time):
             d2[user] = d2[user] - RB_remaining # total packets remaining
             d3[user][current_sample[user]] = d3[user][current_sample[user]] - RB_remaining # # total packets of the current sample remaining
             RB_remaining = 0
-            delay.append(5000) # transfer pending
+            delay.append(int(10000)) # transfer pending
+            reception_times.append(int(10000)) # transfer pending
             print_res("PARTIAL", user)
 
 
         elif (RB_remaining==0):
             print("user", user, " cannot be served as no RBs remaining")
-            delay.append(5000) # transfer pending
+            delay.append(int(10000)) # transfer pending
+            reception_times.append(int(10000)) # transfer pending
             print_res("NONE", user)
 
     
@@ -111,7 +115,7 @@ def schedule(data, data_gen_time):
     pickle.dump(d3_time, open("d3_time.pickle", "wb"))
 
 
-    return (delay, PER)
+    return (reception_times, PER)
 
 
 
