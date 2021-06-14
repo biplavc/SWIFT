@@ -5,3 +5,7 @@ receptions.pickle
 d3_time.pickle
 current_sample.pickle
 device_list.pickle
+papers
+papers/
+new/
+new
